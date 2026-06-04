@@ -1,0 +1,52 @@
+{"_e":"root:init","_t":1780611120604,"format":"v0-jsonl","version":"56.1.13"}
+{"_e":"devserver:start","_t":1780611120613,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../../../app","serverComponents":false,"serverActions":false,"serverRendering":false,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1780611120782,"serverRoot":"../../..","projectRoot":"../../..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":false,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"metro:instantiate","_t":1780611121358,"atlas":false,"workers":8,"host":"::","port":8081}
+{"_e":"metro:bundling:started","_t":1780611154849,"id":"1","platform":"ios","environment":null,"entry":"index.ts"}
+{"_e":"metro:bundling:progress","_t":1780611154850,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1780611154853,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1780611155192,"id":"1","progress":0.010000000000000002,"total":1,"current":1}
+{"_e":"metro:bundling:progress","_t":1780611155295,"id":"1","progress":0.04000000000000001,"total":15,"current":3}
+{"_e":"metro:bundling:progress","_t":1780611155397,"id":"1","progress":0.09972299168975068,"total":19,"current":6}
+{"_e":"metro:bundling:progress","_t":1780611155499,"id":"1","progress":0.09972299168975068,"total":66,"current":15}
+{"_e":"metro:bundling:progress","_t":1780611155599,"id":"1","progress":0.09972299168975068,"total":164,"current":45}
+{"_e":"metro:bundling:progress","_t":1780611155699,"id":"1","progress":0.09972299168975068,"total":275,"current":65}
+{"_e":"metro:bundling:progress","_t":1780611155799,"id":"1","progress":0.09972299168975068,"total":364,"current":114}
+{"_e":"metro:bundling:progress","_t":1780611155900,"id":"1","progress":0.14317019722425128,"total":407,"current":154}
+{"_e":"metro:bundling:progress","_t":1780611155999,"id":"1","progress":0.15233046698356745,"total":474,"current":185}
+{"_e":"metro:bundling:progress","_t":1780611156099,"id":"1","progress":0.2410880647999586,"total":556,"current":273}
+{"_e":"metro:bundling:progress","_t":1780611156199,"id":"1","progress":0.3369003517514693,"total":603,"current":350}
+{"_e":"metro:bundling:progress","_t":1780611156300,"id":"1","progress":0.3638813735691988,"total":620,"current":374}
+{"_e":"metro:bundling:progress","_t":1780611156400,"id":"1","progress":0.44116321207240644,"total":676,"current":449}
+{"_e":"metro:bundling:progress","_t":1780611156500,"id":"1","progress":0.4761704107663473,"total":784,"current":541}
+{"_e":"metro:bundling:progress","_t":1780611156600,"id":"1","progress":0.5128299960695257,"total":856,"current":613}
+{"_e":"metro:bundling:progress","_t":1780611156700,"id":"1","progress":0.5205333310799606,"total":973,"current":702}
+{"_e":"metro:bundling:progress","_t":1780611156800,"id":"1","progress":0.6217017126391329,"total":1007,"current":794}
+{"_e":"metro:bundling:progress","_t":1780611156900,"id":"1","progress":0.6411443895792954,"total":1119,"current":896}
+{"_e":"metro:bundling:progress","_t":1780611157000,"id":"1","progress":0.6970210132373387,"total":1187,"current":991}
+{"_e":"metro:bundling:progress","_t":1780611157100,"id":"1","progress":0.7221586748600828,"total":1245,"current":1058}
+{"_e":"metro:bundling:progress","_t":1780611157200,"id":"1","progress":0.8587603371375058,"total":1255,"current":1163}
+{"_e":"metro:bundling:progress","_t":1780611157300,"id":"1","progress":0.8654637281910009,"total":1320,"current":1228}
+{"_e":"metro:bundling:progress","_t":1780611157400,"id":"1","progress":0.8995642469975554,"total":1358,"current":1288}
+{"_e":"metro:bundling:progress","_t":1780611157501,"id":"1","progress":0.963784262679115,"total":1368,"current":1343}
+{"_e":"metro:bundling:progress","_t":1780611157600,"id":"1","progress":0.9956442882977286,"total":1376,"current":1373}
+{"_e":"metro:bundling:progress","_t":1780611157701,"id":"1","progress":0.9956663106234208,"total":1383,"current":1380}
+{"_e":"metro:bundling:progress","_t":1780611157800,"id":"1","progress":0.9986211652794292,"total":1450,"current":1449}
+{"_e":"metro:bundling:progress","_t":1780611158204,"id":"1","progress":0.999,"total":1450,"current":1450}
+{"_e":"metro:bundling:progress","_t":1780611158305,"id":"1","progress":0.999,"total":1461,"current":1461}
+{"_e":"metro:bundling:done","_t":1780611158376,"id":"1","total":1461,"ms":3526.360084}
+{"_e":"metro:client_log","_t":1780611159011,"level":"warn","data":["RecordingNotificationManager is not implemented on iOS. Any calls to it will be no-ops."]}
+{"_e":"metro:client_log","_t":1780611209211,"level":"warn","data":["[Reanimated] Writing to `value` during component render. Please ensure that you don't access the `value` property nor use `set` method of a shared value while React is rendering a component.\n\nIf you don't want to see this message, you can disable the `strict` mode. Refer to:\nhttps://docs.swmansion.com/react-native-reanimated/docs/debugging/logger-configuration for more details."]}
+{"_e":"metro:client_log","_t":1780611209212,"level":"warn","data":["[Reanimated] Writing to `value` during component render. Please ensure that you don't access the `value` property nor use `set` method of a shared value while React is rendering a component.\n\nIf you don't want to see this message, you can disable the `strict` mode. Refer to:\nhttps://docs.swmansion.com/react-native-reanimated/docs/debugging/logger-configuration for more details."]}
+{"_e":"root:init","_t":1780613059383,"format":"v0-jsonl","version":"56.1.13"}
+{"_e":"devserver:start","_t":1780613059391,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../../../app","serverComponents":false,"serverActions":false,"serverRendering":false,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1780613059542,"serverRoot":"../../..","projectRoot":"../../..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":false,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"metro:instantiate","_t":1780613059801,"atlas":false,"workers":8,"host":"::","port":8081}
+{"_e":"metro:bundling:started","_t":1780613062821,"id":"1","platform":"ios","environment":null,"entry":"index.ts"}
+{"_e":"metro:bundling:progress","_t":1780613062822,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1780613062825,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1780613062925,"id":"1","progress":0.3009881323120949,"total":545,"current":299}
+{"_e":"metro:bundling:progress","_t":1780613063025,"id":"1","progress":0.6743458177384517,"total":1029,"current":845}
+{"_e":"metro:bundling:progress","_t":1780613063127,"id":"1","progress":0.9207531358131489,"total":1360,"current":1305}
+{"_e":"metro:bundling:done","_t":1780613063220,"id":"1","total":1360,"ms":398.187208}
+{"_e":"metro:client_log","_t":1780613063869,"level":"warn","data":["RecordingNotificationManager is not implemented on iOS. Any calls to it will be no-ops."]}
