@@ -244,8 +244,8 @@ export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
 
 ```bash
 # Create Expo project with dev client (required for native modules)
-npx create-expo-app@latest ambient-app --template blank-typescript
-cd ambient-app
+npx create-expo-app@latest nymphaea --template blank-typescript
+cd nymphaea
 
 # Core dependencies
 npx expo install expo-dev-client
@@ -293,7 +293,7 @@ eas build --profile preview   # Build shareable preview .ipa/.apk
 ## 9. Project File Structure
 
 ```
-ambient-app/
+nymphaea/
 ├── app/
 │   └── index.tsx             # Root screen (single screen app)
 ├── src/

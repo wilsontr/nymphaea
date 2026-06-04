@@ -3,7 +3,7 @@ Translated Report (Full Report Below)
 -------------------------------------
 Process:             Ambient [16221]
 Path:                /Users/USER/Library/Developer/CoreSimulator/Devices/383F3B14-8F97-427A-84B0-6582070EDD33/data/Containers/Bundle/Application/2FB51335-4545-47CF-89F5-BFA34178978E/Ambient.app/Ambient
-Identifier:          com.wilsontr.ambient-app
+Identifier:          com.wilsontr.nymphaea
 Version:             1.0.0 (1)
 Code Type:           ARM-64 (Native)
 Role:                Foreground
@@ -514,7 +514,7 @@ Thread 0 crashed with ARM Thread State (64-bit):
    far: 0x0000000000000000  esr: 0x56000080 (Syscall)
 
 Binary Images:
-       0x100f14000 -        0x100f17fff com.wilsontr.ambient-app (1.0.0) <bc86817e-88bb-34b2-ad90-7adf671f2b41> /Users/USER/Library/Developer/CoreSimulator/Devices/383F3B14-8F97-427A-84B0-6582070EDD33/data/Containers/Bundle/Application/2FB51335-4545-47CF-89F5-BFA34178978E/Ambient.app/Ambient
+       0x100f14000 -        0x100f17fff com.wilsontr.nymphaea (1.0.0) <bc86817e-88bb-34b2-ad90-7adf671f2b41> /Users/USER/Library/Developer/CoreSimulator/Devices/383F3B14-8F97-427A-84B0-6582070EDD33/data/Containers/Bundle/Application/2FB51335-4545-47CF-89F5-BFA34178978E/Ambient.app/Ambient
        0x100fc4000 -        0x101013fff dyld_sim (*) <ba544d9a-46ab-3c59-a00f-aba1479d2079> /Volumes/VOLUME/*/dyld_sim
        0x1044e4000 -        0x1058c3fff Ambient.debug.dylib (*) <a96b6c6f-583f-3288-a92f-6dc8823e1ae7> /Users/USER/Library/Developer/CoreSimulator/Devices/383F3B14-8F97-427A-84B0-6582070EDD33/data/Containers/Bundle/Application/2FB51335-4545-47CF-89F5-BFA34178978E/Ambient.app/Ambient.debug.dylib
        0x100f3c000 -        0x100f3ffff libSystem.B.dylib (*) <35bca977-0843-3658-ab06-30cde1ba559e> /Volumes/VOLUME/*/libSystem.B.dylib
@@ -1427,7 +1427,7 @@ dyld_process_snapshot_get_shared_cache failed
 Full Report
 -----------
 
-{"app_name":"Ambient","timestamp":"2026-06-03 21:58:13.00 -0600","app_version":"1.0.0","slice_uuid":"bc86817e-88bb-34b2-ad90-7adf671f2b41","build_version":"1","platform":7,"bundleID":"com.wilsontr.ambient-app","share_with_app_devs":0,"is_first_party":0,"bug_type":"309","os_version":"macOS 26.5.1 (25F80)","roots_installed":0,"name":"Ambient","incident_id":"507186E0-C23B-4F58-A5FA-6D647C75CFEA"}
+{"app_name":"Ambient","timestamp":"2026-06-03 21:58:13.00 -0600","app_version":"1.0.0","slice_uuid":"bc86817e-88bb-34b2-ad90-7adf671f2b41","build_version":"1","platform":7,"bundleID":"com.wilsontr.nymphaea","share_with_app_devs":0,"is_first_party":0,"bug_type":"309","os_version":"macOS 26.5.1 (25F80)","roots_installed":0,"name":"Ambient","incident_id":"507186E0-C23B-4F58-A5FA-6D647C75CFEA"}
 {
   "uptime" : 26000,
   "procRole" : "Foreground",
@@ -1452,7 +1452,7 @@ Full Report
   "procExitAbsTime" : 624162252007,
   "procName" : "Ambient",
   "procPath" : "\/Users\/USER\/Library\/Developer\/CoreSimulator\/Devices\/383F3B14-8F97-427A-84B0-6582070EDD33\/data\/Containers\/Bundle\/Application\/2FB51335-4545-47CF-89F5-BFA34178978E\/Ambient.app\/Ambient",
-  "bundleInfo" : {"CFBundleShortVersionString":"1.0.0","CFBundleVersion":"1","CFBundleIdentifier":"com.wilsontr.ambient-app"},
+  "bundleInfo" : {"CFBundleShortVersionString":"1.0.0","CFBundleVersion":"1","CFBundleIdentifier":"com.wilsontr.nymphaea"},
   "storeInfo" : {"deviceIdentifierForVendor":"BAFE8D66-F267-5661-A3E1-435B1711A035","thirdParty":true},
   "parentProc" : "launchd_sim",
   "parentPid" : 90112,
@@ -1463,7 +1463,7 @@ Full Report
   "bootProgressRegister" : "0x2f000000",
   "responsiblePid" : 81444,
   "responsibleProc" : "SimulatorTrampoline",
-  "codeSigningID" : "com.wilsontr.ambient-app",
+  "codeSigningID" : "com.wilsontr.nymphaea",
   "codeSigningTeamID" : "",
   "codeSigningFlags" : 570425857,
   "codeSigningValidationCategory" : 10,
@@ -1483,7 +1483,7 @@ Full Report
     "arch" : "arm64",
     "base" : 4310777856,
     "CFBundleShortVersionString" : "1.0.0",
-    "CFBundleIdentifier" : "com.wilsontr.ambient-app",
+    "CFBundleIdentifier" : "com.wilsontr.nymphaea",
     "size" : 16384,
     "uuid" : "bc86817e-88bb-34b2-ad90-7adf671f2b41",
     "path" : "\/Users\/USER\/Library\/Developer\/CoreSimulator\/Devices\/383F3B14-8F97-427A-84B0-6582070EDD33\/data\/Containers\/Bundle\/Application\/2FB51335-4545-47CF-89F5-BFA34178978E\/Ambient.app\/Ambient",

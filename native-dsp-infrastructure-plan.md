@@ -21,7 +21,7 @@
 ## 2. Repository Structure
 
 ```
-ambient-app/
+nymphaea/
 ├── modules/                        # All native audio work lives here
 │   ├── core/                       # Platform-agnostic C++ DSP
 │   │   ├── include/

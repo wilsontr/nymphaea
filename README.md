@@ -1,4 +1,4 @@
-# Ambient
+# Nymphea
 
 A generative ambient app — continuous procedural audio and visuals that evolve on their own and respond to touch. No play button, no transport controls.
 
