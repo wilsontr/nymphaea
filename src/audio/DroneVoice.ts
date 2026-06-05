@@ -2,8 +2,6 @@ import {
   AudioContext,
   OscillatorNode,
   GainNode,
-  BiquadFilterNode,
-  WaveShaperNode,
 } from "react-native-audio-api";
 
 /**
@@ -33,6 +31,22 @@ export class DroneVoice {
 
   start(): void {
     this.oscillator.start(0);
+  }
+
+  /** Start oscillator at an explicit time for smoother graph startup. */
+  startAt(when: number): void {
+    this.oscillator.start(when);
+  }
+
+  /** Fade this voice out quickly and stop its oscillator. */
+  stop(currentTime: number, fadeTime = 0.04): void {
+    try {
+      this.gainNode.gain.cancelScheduledValues(currentTime);
+      this.gainNode.gain.linearRampToValueAtTime(0, currentTime + fadeTime);
+      this.oscillator.stop(currentTime + fadeTime + 0.01);
+    } catch {
+      // Oscillator can already be stopped during fast refresh teardown.
+    }
   }
 
   /** Ramp frequency to a new value over `rampTime` seconds. */

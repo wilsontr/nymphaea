@@ -5,6 +5,7 @@ import {
   WaveShaperNode,
 } from "react-native-audio-api";
 import { DroneVoice } from "./DroneVoice";
+import { DattorroReverbNode } from "./DattorroReverbNode";
 
 const BASE_FREQ = 110; // A2
 
@@ -12,16 +13,17 @@ const BASE_FREQ = 110; // A2
  * Drone voice ratios:
  *   Voice 0 – root (1.00)
  *   Voice 1 – perfect fifth (1.50)
- *   Voice 2 – octave (2.00)
+ *   Voice 2 – suboctave (0.50)
  *   Voice 3 – minor/major third (mood-interpolated, rebuilt on mood change)
  *   Voice 4 – overtone with texture influence (3.00)
  */
 const RATIOS: [number, OscillatorType][] = [
   [1.0, "sine"],
-  [1.5, "sine"],
-  [2.0, "sine"],
-  [1.2, "triangle"], // minor third ≈ 1.189; will be updated by mood
-  [3.0, "sawtooth"],
+  [1.505, "sine"],
+  [0.5006, "sawtooth"],
+  [1.2, "sawtooth"], // minor third ≈ 1.189; will be updated by mood
+  [3.507, "sine"],
+  [4.0, "triangle"],
 ];
 
 /** Build a soft-clip waveshaper curve (tanh approximation). */
@@ -40,7 +42,9 @@ export class AudioEngine {
   private filter: BiquadFilterNode | null = null;
   private masterGain: GainNode | null = null;
   private waveShaper: WaveShaperNode | null = null;
+  private reverb: DattorroReverbNode | null = null;
   private driftTimer: ReturnType<typeof setInterval> | null = null;
+  private startupPhaseUntil = 0;
 
   // Current param values (updated from the outside)
   private mood = 0.3;
@@ -54,9 +58,11 @@ export class AudioEngine {
 
     this.context = new AudioContext();
     const ctx = this.context;
+    const t0 = ctx.currentTime;
+    this.startupPhaseUntil = t0 + 1.5;
 
     // --- Build audio graph ---
-    // Voices → WaveShaper → Filter → MasterGain → destination
+    // Voices → WaveShaper → Filter → DattorroReverb → MasterGain → destination
     this.masterGain = ctx.createGain();
     this.masterGain.gain.value = 0.0; // fade in on start
 
@@ -66,30 +72,47 @@ export class AudioEngine {
       this.mood,
       this.brightness,
     );
-    this.filter.Q.value = 1.2;
+    this.filter.Q.value = this._filterResonance(this.texture);
 
     this.waveShaper = ctx.createWaveShaper();
     this.waveShaper.curve = makeSoftClipCurve();
     this.waveShaper.oversample = "4x";
 
+    this.reverb = new DattorroReverbNode(ctx, {
+      bandwidth: 0.8,
+      decay: 0.95,
+      damping: 0.2,
+      diffusion: 0.8,
+      wetDry: 0.95,
+      preDelayMs: 80,
+      inputGain: 0.3,
+    });
+
     // Create voices and connect them to the waveShaper
-    for (const [ratio, type] of RATIOS) {
+    for (let i = 0; i < RATIOS.length; i++) {
+      const [ratio, type] = RATIOS[i];
+      const tunedRatio = i === 3 ? 1.189 + this.mood * (1.26 - 1.189) : ratio;
       const voice = new DroneVoice(ctx, BASE_FREQ, ratio, type);
+      voice.setDetune(0, t0, 0.01);
+      voice.setFrequency(BASE_FREQ * tunedRatio, t0, 0.01);
       voice.gainNode.connect(this.waveShaper);
       this.voices.push(voice);
     }
 
     this.waveShaper.connect(this.filter);
-    this.filter.connect(this.masterGain);
+    this.filter.connect(this.reverb.node);
+    this.reverb.node.connect(this.masterGain);
     this.masterGain.connect(ctx.destination);
 
     // Start all oscillators
     for (const voice of this.voices) {
-      voice.start();
+      voice.startAt(t0 + 0.03);
     }
 
-    // Fade in master gain over 2 seconds
-    this.masterGain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 2);
+    // // Give the graph a moment to settle, then fade in.
+    this.masterGain.gain.linearRampToValueAtTime(0, t0);
+    this.masterGain.gain.cancelScheduledValues(t0);
+    this.masterGain.gain.linearRampToValueAtTime(1.0, t0 + 5);
 
     // Start slow drift timer for individual voice detuning
     this.driftTimer = setInterval(() => this._driftVoices(), 80);
@@ -101,6 +124,23 @@ export class AudioEngine {
       this.driftTimer = null;
     }
     if (this.context) {
+      const t = this.context.currentTime;
+
+      // Fade-out quickly to suppress teardown chirps on fast reload.
+      if (this.masterGain) {
+        this.masterGain.gain.cancelScheduledValues(t);
+        this.masterGain.gain.linearRampToValueAtTime(0, t + 0.04);
+      }
+
+      for (const voice of this.voices) {
+        voice.stop(t, 0.04);
+      }
+
+      this.waveShaper?.disconnect();
+      this.filter?.disconnect();
+      this.reverb?.dispose();
+      this.masterGain?.disconnect();
+
       this.context.close();
       this.context = null;
     }
@@ -108,9 +148,10 @@ export class AudioEngine {
     this.filter = null;
     this.masterGain = null;
     this.waveShaper = null;
+    this.reverb = null;
   }
 
-  // --- Parameter setters (called from useAnimatedReaction via runOnJS) ---
+  // --- Parameter setters 
 
   setMood(value: number): void {
     this.mood = value;
@@ -120,10 +161,16 @@ export class AudioEngine {
       this._filterCutoff(value, this.brightness),
       t + 0.5,
     );
+    // this.reverb?.setDecay(0.25 + value * 0.75);
+    // this.reverb?.setWetDry(0.2 + value * 0.45);
+
     // Voice 3: interpolate between minor third (1.189) and major third (1.260)
     const thirdRatio = 1.189 + value * (1.26 - 1.189);
     const v = this.voices[3];
-    if (v) v.setFrequency(BASE_FREQ * thirdRatio, t);
+    if (v) {
+      const ramp = t < this.startupPhaseUntil ? 0.02 : 2;
+      v.setFrequency(BASE_FREQ * thirdRatio, t, ramp);
+    }
   }
 
   setBrightness(value: number): void {
@@ -136,7 +183,10 @@ export class AudioEngine {
     );
     // Brightness also nudges master gain (louder = brighter)
     const gainTarget = 0.4 + value * 0.35;
-    this.masterGain.gain.linearRampToValueAtTime(gainTarget, t + 1.0);
+    // this.masterGain.gain.linearRampToValueAtTime(gainTarget, t + 1.0);
+
+    // Lower brightness darkens the tail with stronger damping.
+    // this.reverb?.setDamping(0.001 + (1 - value) * 0.08);
   }
 
   setTexture(value: number): void {
@@ -152,6 +202,10 @@ export class AudioEngine {
         this.context.currentTime + 0.5,
       );
     }
+
+    // Higher texture increases diffusion and subtle pre-delay spread.
+    // this.reverb?.setDiffusion(0.5 + value * 0.5);
+    // this.reverb?.setPreDelayMs(value * 30);
   }
 
   setSpeed(value: number): void {
@@ -171,13 +225,21 @@ export class AudioEngine {
         this.context.currentTime + 1.0,
       );
     }
+
+    // this.reverb?.setWetDry(0.15 + value * 0.55);
+    // this.reverb?.setWetDry(0.9);
   }
 
   // --- Internal helpers ---
 
   private _filterCutoff(mood: number, brightness: number): number {
     // mood 0–1: 200–1200 Hz base; brightness 0–1: additional 0–2000 Hz boost
-    return 200 + mood * 1000 + brightness * 2000;
+    return 100 + mood * 1200 + brightness * 2200;
+  }
+
+  private _filterResonance(texture: number): number {
+    // texture 0–1: Q from 1.0 to 4.0
+    return 1.0 + texture * 3.0;
   }
 
   private _driftVoices(): void {

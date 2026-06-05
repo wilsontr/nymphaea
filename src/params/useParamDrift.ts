@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { runOnUI } from "react-native-reanimated";
+import { scheduleOnUI } from "react-native-worklets";
+import type { SharedValue } from "react-native-reanimated";
 import type { Params } from "./useParams";
 
 const DRIFT_INTERVAL_MS = 50; // ~20 Hz update rate for drift
@@ -18,7 +19,10 @@ function clamp(v: number, min: number, max: number): number {
  * both the audio engine (via useAnimatedReaction) and the visual
  * renderer pick up changes automatically.
  */
-export function useParamDrift(params: Params): void {
+export function useParamDrift(
+  params: Params,
+  isInteracting: SharedValue<number>,
+): void {
   // Independent phase accumulators for each param's slow LFO
   const phases = useRef({
     density: Math.random() * Math.PI * 2,
@@ -39,14 +43,31 @@ export function useParamDrift(params: Params): void {
 
   useEffect(() => {
     let lastTime = Date.now();
+    let wasInteracting = false;
 
     const tick = () => {
       const now = Date.now();
       const dt = (now - lastTime) / 1000; // seconds
       lastTime = now;
 
+      const interacting = isInteracting.value > 0;
+      if (interacting) {
+        wasInteracting = true;
+        return;
+      }
+
       const ph = phases.current;
       const vel = velocities.current;
+
+      if (wasInteracting) {
+        // Resume drift from user-set values to avoid immediate snap-back.
+        vel.density = params.density.value;
+        vel.mood = params.mood.value;
+        vel.brightness = params.brightness.value;
+        vel.speed = params.speed.value;
+        vel.texture = params.texture.value;
+        wasInteracting = false;
+      }
 
       // Advance LFO phases at different rates
       ph.density += dt * 0.07;
@@ -85,17 +106,30 @@ export function useParamDrift(params: Params): void {
       const newSpeed = clamp(vel.speed, 0, 1);
       const newTexture = clamp(vel.texture, 0, 1);
 
-      runOnUI(() => {
-        "worklet";
-        params.density.value = newDensity;
-        params.mood.value = newMood;
-        params.brightness.value = newBrightness;
-        params.speed.value = newSpeed;
-        params.texture.value = newTexture;
-      })();
+      scheduleOnUI(
+        (
+          density: number,
+          mood: number,
+          brightness: number,
+          speed: number,
+          texture: number,
+        ) => {
+          "worklet";
+          params.density.value = density;
+          params.mood.value = mood;
+          params.brightness.value = brightness;
+          params.speed.value = speed;
+          params.texture.value = texture;
+        },
+        newDensity,
+        newMood,
+        newBrightness,
+        newSpeed,
+        newTexture,
+      );
     };
 
     const id = setInterval(tick, DRIFT_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [params]);
+  }, [params, isInteracting]);
 }

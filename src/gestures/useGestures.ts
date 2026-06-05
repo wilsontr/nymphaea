@@ -1,4 +1,5 @@
 import { Gesture } from "react-native-gesture-handler";
+import type { SharedValue } from "react-native-reanimated";
 import type { Params } from "../params/useParams";
 
 /** Clamp `v` to [min, max]. Runs as a worklet. */
@@ -20,45 +21,77 @@ function clamp(v: number, min: number, max: number): number {
  *
  * All handlers run as Reanimated worklets — no JS thread involvement.
  */
-export function useGestures(params: Params) {
+export function useGestures(
+  params: Params,
+  isInteracting: SharedValue<number>,
+) {
+  const beginInteraction = () => {
+    "worklet";
+    isInteracting.value += 1;
+  };
+
+  const endInteraction = () => {
+    "worklet";
+    isInteracting.value = Math.max(0, isInteracting.value - 1);
+  };
+
   // --- Pan: vertical → mood, horizontal → density ---
+  const panStart = { mood: 0, density: 0 };
   const pan = Gesture.Pan()
     .minDistance(4)
+    .onBegin(beginInteraction)
+    .onStart(() => {
+      "worklet";
+      panStart.mood = params.mood.value;
+      panStart.density = params.density.value;
+    })
     .onUpdate((e) => {
       "worklet";
       // Vertical: swipe up raises mood (negative translationY = up)
-      params.mood.value = clamp(
-        params.mood.value - e.translationY * 0.0006,
-        0,
-        1,
-      );
+      params.mood.value = clamp(panStart.mood - e.translationY * 0.0006, 0, 1);
       // Horizontal: swipe right raises density
       params.density.value = clamp(
-        params.density.value + e.translationX * 0.0005,
+        panStart.density + e.translationX * 0.0005,
         0,
         1,
       );
-    });
+    })
+    .onFinalize(endInteraction);
 
   // --- Pinch: scale → brightness ---
-  const pinch = Gesture.Pinch().onUpdate((e) => {
-    "worklet";
-    const delta = (e.scale - 1) * 0.15;
-    params.brightness.value = clamp(params.brightness.value + delta, 0, 1);
-  });
+  const pinchStart = { brightness: 0 };
+  const pinch = Gesture.Pinch()
+    .onBegin(beginInteraction)
+    .onStart(() => {
+      "worklet";
+      pinchStart.brightness = params.brightness.value;
+    })
+    .onUpdate((e) => {
+      "worklet";
+      const delta = (e.scale - 1) * 0.25;
+      params.brightness.value = clamp(pinchStart.brightness + delta, 0, 1);
+    })
+    .onFinalize(endInteraction);
 
   // --- Two-finger pan: vertical → speed ---
+  const twoFingerStart = { speed: 0 };
   const twoFingerPan = Gesture.Pan()
     .minPointers(2)
     .maxPointers(2)
+    .onBegin(beginInteraction)
+    .onStart(() => {
+      "worklet";
+      twoFingerStart.speed = params.speed.value;
+    })
     .onUpdate((e) => {
       "worklet";
       params.speed.value = clamp(
-        params.speed.value - e.translationY * 0.0005,
+        twoFingerStart.speed - e.translationY * 0.0005,
         0,
         1,
       );
-    });
+    })
+    .onFinalize(endInteraction);
 
   // --- Long-press: hold to raise texture, release to lower ---
   const longPress = Gesture.LongPress()

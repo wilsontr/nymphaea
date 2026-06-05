@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { useSharedValue } from "react-native-reanimated";
 import {
   GestureHandlerRootView,
   GestureDetector,
@@ -19,15 +20,16 @@ import { useGestures } from "./src/gestures/useGestures";
 export default function App() {
   // Shared parameter bus
   const params = useParams();
+  const isInteracting = useSharedValue(0);
 
   // Autonomous drift keeps parameters evolving without user input
-  useParamDrift(params);
+  useParamDrift(params, isInteracting);
 
   // Audio engine — initialised once, driven by params
   useAudioEngine(params);
 
   // Gesture → param mapping
-  const gesture = useGestures(params);
+  const gesture = useGestures(params, isInteracting);
 
   return (
     <GestureHandlerRootView style={styles.root}>
